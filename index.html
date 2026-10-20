@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <title>Descubra o seu Perfil Psicológico</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    /* ========================================
+       1. Variáveis e tema
+    ======================================== */
+
+    :root {
+      box-sizing: border-box;
+
+      --bg: #ece8f6;
+      --card: #fff;
+      --ink: #2b1b4a;
+      --mute: #6b5f85;
+      --line: #d8d0ea;
+      --accent: #e4572e;
+      --accent-ink: #fff;
+      --fine: #a9a3b8;
+      --note: #fff4d6;
+      --note-ink: #5a4300;
+
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #17102b;
+        --card: #231a40;
+        --ink: #f1ecff;
+        --mute: #b3a8d1;
+        --line: #3a2f5e;
+        --accent: #ff7a4d;
+        --accent-ink: #1b0e00;
+        --fine: #5f5683;
+        --note: #3a2f10;
+        --note-ink: #ffe8a3;
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #17102b;
+      --card: #231a40;
+      --ink: #f1ecff;
+      --mute: #b3a8d1;
+      --line: #3a2f5e;
+      --accent: #ff7a4d;
+      --accent-ink: #1b0e00;
+      --fine: #5f5683;
+      --note: #3a2f10;
+      --note-ink: #ffe8a3;
+    }
+
+    /* ========================================
+       2. Reset e estilos globais
+    ======================================== */
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-padding-top: env(safe-area-inset-top, 0px);
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family:
+        "Bricolage Grotesque",
+        system-ui,
+        -apple-system,
+        "Segoe UI",
+        sans-serif;
+      line-height: 1.5;
+    }
+
+    h1,
+    h2,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: clamp(2rem, 7vw, 3rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    input:focus-visible,
+    button:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ========================================
+       3. Estrutura principal
+    ======================================== */
+
+    main {
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 28px 18px 48px;
+    }
+
+    .lead {
+      margin-bottom: 24px;
+      color: var(--mute);
+    }
+
+    .badge {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 3px 10px;
+      border-radius: 99px;
+      background: var(--note);
+      color: var(--note-ink);
+      font-size: 0.8rem;
+    }
+
+    .panel,
+    form {
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--card);
+    }
+
+    /* ========================================
+       4. Formulário e campos
+    ======================================== */
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label,
+    legend {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: transparent;
+      color: var(--ink);
+    }
+
+    fieldset {
+      margin: 0 0 18px;
+      padding: 0;
+      border: 0;
+    }
+
+    .opt {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 6px;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-weight: 400;
+      cursor: pointer;
+    }
+
+    .opt input {
+      margin-top: 5px;
+      accent-color: var(--accent);
+    }
+
+    .opt:has(input:checked) {
+      border-color: var(--accent);
+      background: color-mix(
+        in srgb,
+        var(--accent) 10%,
+        transparent
+      );
+    }
+
+    /* ========================================
+       5. Consentimento demonstrativo
+    ======================================== */
+
+    .consent {
+      display: flex;
+      align-items: flex-start;
+      gap: 4px;
+      margin: 6px 0 12px;
+      color: var(--fine);
+      font-size: 8px;
+      font-weight: 400;
+      line-height: 1.2;
+    }
+
+    .consent input {
+      width: 9px;
+      height: 9px;
+      margin: 1px 0 0;
+      accent-color: var(--fine);
+    }
+
+    .consent label {
+      display: inline;
+      margin: 0;
+      font-size: 8px;
+      font-weight: 400;
+    }
+
+    /* ========================================
+       6. Botões e mensagens
+    ======================================== */
+
+    button {
+      width: 100%;
+      padding: 14px 22px;
+      border: 0;
+      border-radius: 12px;
+      background: var(--accent);
+      color: var(--accent-ink);
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    button.ghost {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .err {
+      min-height: 1.2em;
+      margin: 0 0 8px;
+      color: #c0262d;
+      font-size: 0.9rem;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .err {
+        color: #ff8d92;
+      }
+    }
+
+    /* ========================================
+       7. Resultados
+    ======================================== */
+
+    .profile {
+      margin: 4px 0 6px;
+      font-size: 1.8rem;
+      font-weight: 800;
+    }
+
+    .result-greeting {
+      margin: 0;
+      color: var(--mute);
+    }
+
+    .note {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 14px;
+      background: var(--note);
+      color: var(--note-ink);
+    }
+
+    .note h2 {
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+    }
+
+    .note ul {
+      margin: 0 0 10px;
+      padding-left: 20px;
+    }
+
+    .note p {
+      margin-bottom: 6px;
+    }
+
+    .shown {
+      margin-top: 8px;
+      padding: 10px;
+      border: 2px solid var(--accent);
+      border-radius: 10px;
+      background: var(--card);
+      color: var(--ink);
+      font-size: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <span class="badge">
+      Demonstração académica de padrão enganoso (dark pattern) —
+      nenhum dado sai do seu navegador
+    </span>
+
+    <h1>Descubra o seu Perfil Psicológico</h1>
+
+    <p class="lead">
+      Quatro perguntas rápidas e revelamos como a sua mente funciona.
+    </p>
+
+    <!-- ======================================
+         Formulário do questionário
+    ======================================= -->
+
+    <form id="quiz" novalidate>
+      <div class="field">
+        <label for="nome">Nome</label>
+        <input
+          id="nome"
+          type="text"
+          autocomplete="name"
+        >
+      </div>
+
+      <div class="field">
+        <label for="email">E-mail</label>
+        <input
+          id="email"
+          type="email"
+          autocomplete="email"
+        >
+      </div>
+
+      <div class="field">
+        <label for="nasc">Data de nascimento</label>
+        <input id="nasc" type="date">
+      </div>
+
+      <fieldset data-q="1">
+        <legend>1. Num fim de semana livre, prefere…</legend>
+
+        <label class="opt">
+          <input type="radio" name="q1" value="A">
+          Sair com amigos
+        </label>
+
+        <label class="opt">
+          <input type="radio" name="q1" value="B">
+          Ler ou ver uma série em casa
+        </label>
+
+        <label class="opt">
+          <input type="radio" name="q1" value="C">
+          Começar um projeto novo
+        </label>
+      </fieldset>
+
+      <fieldset data-q="2">
+        <legend>
+          2. Perante um problema, o seu primeiro instinto é…
+        </legend>
+
+        <label class="opt">
+          <input type="radio" name="q2" value="A">
+          Pedir a opinião de alguém
+        </label>
+
+        <label class="opt">
+          <input type="radio" name="q2" value="B">
+          Analisar tudo com calma
+        </label>
+
+        <label class="opt">
+          <input type="radio" name="q2" value="C">
+          Testar uma solução já
+        </label>
+      </fieldset>
+
+      <fieldset data-q="3">
+        <legend>3. O que mais o motiva?</legend>
+
+        <label class="opt">
+          <input type="radio" name="q3" value="A">
+          Ligações com as pessoas
+        </label>
+
+        <label class="opt">
+          <input type="radio" name="q3" value="B">
+          Compreender como as coisas funcionam
+        </label>
+
+        <label class="opt">
+          <input type="radio" name="q3" value="C">
+          Alcançar objetivos
+        </label>
+      </fieldset>
+
+      <fieldset data-q="4">
+        <legend>4. Numa discussão, tende a…</legend>
+
+        <label class="opt">
+          <input type="radio" name="q4" value="A">
+          Procurar consenso
+        </label>
+
+        <label class="opt">
+          <input type="radio" name="q4" value="B">
+          Ouvir antes de falar
+        </label>
+
+        <label class="opt">
+          <input type="radio" name="q4" value="C">
+          Defender a sua posição
+        </label>
+      </fieldset>
+
+      <!-- Consentimento intencionalmente pouco visível
+           para fins de demonstração académica. -->
+
+      <div class="consent">
+        <input type="checkbox" id="termos" checked>
+
+        <label for="termos" id="termosTxt">
+          Li e aceito os Termos de Uso e a Política de Privacidade,
+          autorizando a recolha, o armazenamento, a partilha com
+          terceiros e o tratamento abrangente dos meus dados pessoais
+          (nome, e-mail, data de nascimento e respostas), incluindo
+          para fins de marketing e criação de perfis, necessários ao
+          funcionamento do teste.
+        </label>
+      </div>
+
+      <p
+        class="err"
+        id="err"
+        role="alert"
+        aria-live="polite"
+      ></p>
+
+      <button type="submit">Ver Resultado</button>
+    </form>
+
+    <!-- ======================================
+         Resultado e explicação académica
+    ======================================= -->
+
+    <section id="out" class="hidden" aria-live="polite">
+      <div class="panel">
+        <p class="result-greeting">
+          Olá, <span id="who"></span>. O seu perfil é:
+        </p>
+
+        <p class="profile" id="prof"></p>
+
+        <p id="desc" style="margin: 0"></p>
+      </div>
+
+      <div class="note">
+        <h2>Revelação: o que esta página fez</h2>
+
+        <ul>
+          <li>A caixa de consentimento já vinha <b>pré-assinalada</b>.</li>
+          <li>O texto tinha <b>8 px</b> e contraste baixo, fora do foco visual.</li>
+          <li>
+            Pedia autorização ampla (partilha, marketing e perfis)
+            sem finalidade específica.
+          </li>
+          <li>
+            Em vez de pedir consentimento, empacotou-o com a ação principal.
+          </li>
+        </ul>
+
+        <p>
+          Nada foi enviado: esta demonstração não tem servidor.
+          Na UE, o RGPD define requisitos para um consentimento válido,
+          incluindo que seja livre, específico, informado e inequívoco.
+          A conformidade jurídica dependeria também das circunstâncias
+          concretas e da implementação.
+        </p>
+
+        <div class="shown">
+          <b>Versão conforme:</b>
+          caixa desassinalada, texto legível, finalidades separadas
+          e opcionais (por exemplo, «Aceito receber comunicações de
+          marketing»), com ligação à política completa.
+        </div>
+      </div>
+
+      <button
+        class="ghost"
+        id="restart"
+        type="button"
+      >
+        Refazer o teste
+      </button>
+    </section>
+  </main>
+
+  <script>
+    /* ========================================
+       1. Dados dos perfis
+    ======================================== */
+
+    const perfis = {
+      A: {
+        nome: "O Conector",
+        descricao:
+          "Energiza-se com pessoas e decide melhor em diálogo. " +
+          "A sua força é criar laços e consensos."
+      },
+
+      B: {
+        nome: "O Analista",
+        descricao:
+          "Procura compreender antes de agir. " +
+          "A sua força é a reflexão cuidadosa e a precisão."
+      },
+
+      C: {
+        nome: "O Executor",
+        descricao:
+          "Gosta de avançar e ver resultados. " +
+          "A sua força é a iniciativa e a determinação."
+      }
+    };
+
+    /* ========================================
+       2. Elementos do DOM
+    ======================================== */
+
+    const form = document.getElementById("quiz");
+    const output = document.getElementById("out");
+    const errorMessage = document.getElementById("err");
+
+    const nomeInput = document.getElementById("nome");
+    const emailInput = document.getElementById("email");
+    const nascimentoInput = document.getElementById("nasc");
+    const termosInput = document.getElementById("termos");
+
+    /* ========================================
+       3. Validação dos dados pessoais
+    ======================================== */
+
+    function validarDadosPessoais() {
+      const nome = nomeInput.value.trim();
+      const email = emailInput.value.trim();
+      const nascimento = nascimentoInput.value;
+
+      if (!nome || !email || !nascimento) {
+        return {
+          valido: false,
+          mensagem:
+            "Preencha nome, e-mail e data de nascimento."
+        };
+      }
+
+      const emailValido = /^\S+@\S+\.\S+$/.test(email);
+
+      if (!emailValido) {
+        return {
+          valido: false,
+          mensagem: "Introduza um e-mail válido."
+        };
+      }
+
+      return {
+        valido: true,
+        nome
+      };
+    }
+
+    /* ========================================
+       4. Recolha e validação das respostas
+    ======================================== */
+
+    function obterRespostas() {
+      const contagem = {
+        A: 0,
+        B: 0,
+        C: 0
+      };
+
+      for (let numero = 1; numero <= 4; numero++) {
+        const resposta = form.querySelector(
+          `input[name="q${numero}"]:checked`
+        );
+
+        if (!resposta) {
+          return {
+            valido: false,
+            mensagem: "Responda às 4 perguntas."
+          };
+        }
+
+        contagem[resposta.value]++;
+      }
+
+      return {
+        valido: true,
+        contagem
+      };
+    }
+
+    /* ========================================
+       5. Cálculo do perfil
+    ======================================== */
+
+    function calcularPerfil(contagem) {
+      // Em caso de empate, mantém a prioridade A, B, C.
+      return Object.keys(contagem).reduce((melhor, atual) => {
+        return contagem[atual] > contagem[melhor]
+          ? atual
+          : melhor;
+      }, "A");
+    }
+
+    /* ========================================
+       6. Apresentação do resultado
+    ======================================== */
+
+    function mostrarResultado(nome, chavePerfil) {
+      const perfil = perfis[chavePerfil];
+
+      document.getElementById("who").textContent = nome;
+      document.getElementById("prof").textContent = perfil.nome;
+      document.getElementById("desc").textContent = perfil.descricao;
+
+      form.classList.add("hidden");
+      output.classList.remove("hidden");
+
+      window.scrollTo(0, 0);
+    }
+
+    /* ========================================
+       7. Submissão do questionário
+    ======================================== */
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      errorMessage.textContent = "";
+
+      const dados = validarDadosPessoais();
+
+      if (!dados.valido) {
+        errorMessage.textContent = dados.mensagem;
+        return;
+      }
+
+      const respostas = obterRespostas();
+
+      if (!respostas.valido) {
+        errorMessage.textContent = respostas.mensagem;
+        return;
+      }
+
+      if (!termosInput.checked) {
+        errorMessage.textContent =
+          "É necessário aceitar os termos para ver o resultado.";
+        return;
+      }
+
+      const perfil = calcularPerfil(respostas.contagem);
+
+      mostrarResultado(dados.nome, perfil);
+    });
+
+    /* ========================================
+       8. Reiniciar o questionário
+    ======================================== */
+
+    document.getElementById("restart").addEventListener("click", () => {
+      form.reset();
+
+      // Preserva o comportamento original da demonstração:
+      // a caixa volta a ficar pré-assinalada.
+      termosInput.checked = true;
+
+      errorMessage.textContent = "";
+      output.classList.add("hidden");
+      form.classList.remove("hidden");
+
+      window.scrollTo(0, 0);
+    });
+  </script>
+</body>
+</html>
